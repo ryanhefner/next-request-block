@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Head from 'next/head';
 import { RequestBlockProvider, getDataFromTree } from 'react-request-block';
 import { getDisplayName } from './hoc-utils';
-import initRequestBlockCache from './initRequestBlock';
+import initRequestBlockCache from './initRequestBlockCache';
 const Flatted = require('flatted/cjs');
 
 export default (ComposedComponent) => {
