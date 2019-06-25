@@ -6,85 +6,88 @@ import { getDisplayName } from './hoc-utils';
 import initRequestBlockCache from './initRequestBlockCache';
 const Flatted = require('flatted/cjs');
 
-export default (ComposedComponent) => {
-  const propTypes = {
-    requestBlockState: PropTypes.shape(),
-  };
+export default ({ origin }) => {
+  return (ComposedComponent) => {
+    const propTypes = {
+      requestBlockState: PropTypes.shape(),
+    };
 
-  const defaultProps = {
-    requestBlockState: null,
-  };
+    const defaultProps = {
+      requestBlockState: null,
+    };
 
-  const RequestBlock = class extends React.Component {
-    static displayName = `withRequestBlock(${getDisplayName(ComposedComponent)})`;
+    const RequestBlock = class extends React.Component {
+      static displayName = `withRequestBlock(${getDisplayName(ComposedComponent)})`;
 
-    constructor(props) {
-      super(props);
+      constructor(props) {
+        super(props);
 
-      this.requestBlockCache = initRequestBlockCache(props.requestBlockState);
-    }
-
-    static async getInitialProps(props) {
-      const { Component, router, ctx } = props;
-
-      let composedInitialProps = {};
-      if (ComposedComponent.getInitialProps) {
-        composedInitialProps = await ComposedComponent.getInitialProps(props);
+        this.requestBlockCache = initRequestBlockCache(props.requestBlockState);
       }
 
-      // Run all RequestBlock queries in the component tree
-      // and extract the resulting data
-      const requestBlockCache = initRequestBlockCache();
+      static async getInitialProps(props) {
+        const { Component, router, ctx } = props;
 
-      if (!process.browser) {
-        try {
-          // Run all RequestBlock queries
-          await getDataFromTree(
-            <RequestBlockProvider cache={requestBlockCache}>
-              <ComposedComponent
-                Component={Component}
-                ctx={ctx}
-                router={router}
-                store={ctx.store}
-                {...composedInitialProps}
-              />
-            </RequestBlockProvider>
-          );
-        } catch (error) {
-          // Prevent errors from crashing SSR.
-          // Handle them in components via the data.error prop:
-          if (process.env.NODE_ENV === 'development') {
-            console.log(error);
-          }
+        let composedInitialProps = {};
+        if (ComposedComponent.getInitialProps) {
+          composedInitialProps = await ComposedComponent.getInitialProps(props);
         }
 
-        // getDataFromTree does not call componentWillUnmount
-        // head side effect therefore need to be cleared manually
-        Head.rewind();
+        // Run all RequestBlock queries in the component tree
+        // and extract the resulting data
+        const requestBlockCache = initRequestBlockCache();
+
+        if (!process.browser) {
+          try {
+            // Run all RequestBlock queries
+            await getDataFromTree(
+              <RequestBlockProvider cache={requestBlockCache} origin={origin}>
+                <ComposedComponent
+                  Component={Component}
+                  ctx={ctx}
+                  router={router}
+                  store={ctx.store}
+                  {...composedInitialProps}
+                />
+              </RequestBlockProvider>
+            );
+          } catch (error) {
+            // Prevent errors from crashing SSR.
+            // Handle them in components via the data.error prop:
+            if (process.env.NODE_ENV === 'development') {
+              console.log(error);
+            }
+          }
+
+          // getDataFromTree does not call componentWillUnmount
+          // head side effect therefore need to be cleared manually
+          Head.rewind();
+        }
+
+        // Pass in the initial cache state
+        const requestBlockState = {
+          cache: Flatted.stringify(requestBlockCache.extract()),
+          origin,
+        };
+
+        return {
+          ...composedInitialProps,
+          requestBlockState,
+        };
       }
 
-      // Pass in the initial cache state
-      const requestBlockState = {
-        cache: Flatted.stringify(requestBlockCache.extract()),
-      };
+      render() {
+        return (
+          <RequestBlockProvider cache={this.requestBlockCache} origin={origin}>
+            <ComposedComponent {...this.props} />
+          </RequestBlockProvider>
+        );
+      }
+    };
 
-      return {
-        ...composedInitialProps,
-        requestBlockState,
-      };
-    }
+    RequestBlock.propTypes = propTypes;
+    RequestBlock.defaultProps = defaultProps;
 
-    render() {
-      return (
-        <RequestBlockProvider cache={this.requestBlockCache}>
-          <ComposedComponent {...this.props} />
-        </RequestBlockProvider>
-      );
-    }
+    return RequestBlock;
   };
-
-  RequestBlock.propTypes = propTypes;
-  RequestBlock.defaultProps = defaultProps;
-
-  return RequestBlock;
 }

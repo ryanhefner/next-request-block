@@ -5,7 +5,7 @@ let cache = null;
 function create({
   cache,
 }) {
-  if (cache instanceof RequestBlockCache) {
+  if (cache && cache instanceof RequestBlockCache) {
     return cache;
   }
 
