@@ -1,26 +1,26 @@
 // TypeScript Version: 3.0
 
 import { Component } from 'react';
-import { ContentfulClientInterface } from 'react-contentful';
+import { RequestBlockCache } from 'react-request-block';
 
 /**
- * initContentful
+ * initRequestBlockCache
  */
 
-export interface initContentfulParams {
+export interface initRequestBlockCacheParams {
   initialState: any;
 }
 
-export function initContentful(params: initContentfulParams): ContentfulClientInterface;
+export function initRequestBlockCache(params: initRequestBlockCacheParams): RequestBlockCache;
 
 /**
- * withContentful
+ * withRequestBlock
  */
 
-export interface withContentfulParams {
+export interface withRequestBlockParams {
   accessToken: string;
   host: string;
   space: string;
 }
 
-export type withContentful = (params: withContentfulParams) => Component;
+export type withRequestBlock = (params: withRequestBlockParams) => Component;
