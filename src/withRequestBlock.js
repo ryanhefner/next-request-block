@@ -38,8 +38,9 @@ export default ({ origin = '' }) => {
         const requestBlockCache = initRequestBlockCache();
 
         if (!process.browser) {
-          const { referer } = ctx.req.headers;
-          const defaultOrigin = referer.endsWith('/') ? referer.slice(0, -1) : referer;
+          const { req } = ctx;
+          const { host } = req.headers;
+          const defaultOrigin = `${req && req.connection && req.connection.encrypted ? 'https://' : 'http://'}${host}`;
 
           try {
             // Run all RequestBlock queries
