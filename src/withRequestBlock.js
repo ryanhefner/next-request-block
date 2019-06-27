@@ -38,10 +38,13 @@ export default ({ origin = '' }) => {
         const requestBlockCache = initRequestBlockCache();
 
         if (!process.browser) {
+          const { referer } = ctx.req.headers;
+          const defaultOrigin = referer.endsWith('/') ? referer.slice(0, -1) : referer;
+
           try {
             // Run all RequestBlock queries
             await getDataFromTree(
-              <RequestBlockProvider cache={requestBlockCache} origin={origin}>
+              <RequestBlockProvider cache={requestBlockCache} origin={origin || defaultOrigin}>
                 <ComposedComponent
                   Component={Component}
                   ctx={ctx}
@@ -78,7 +81,7 @@ export default ({ origin = '' }) => {
 
       render() {
         return (
-          <RequestBlockProvider cache={this.requestBlockCache} origin={origin}>
+          <RequestBlockProvider cache={this.requestBlockCache} origin={origin || ''}>
             <ComposedComponent {...this.props} />
           </RequestBlockProvider>
         );
