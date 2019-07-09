@@ -28,7 +28,7 @@ of Next.js, while making it easy to compose requests/data into your Next + React
 #### Options
 
 | Option   | Default                                                        | Description                   |
-|==========|================================================================|===============================|
+| -------- | -------------------------------------------------------------- | ----------------------------- |
 | `origin` | `http(s)://[current host]` (server-side) or `''` (client-side) | Current protocol/host of app. |
 
 
