@@ -6,7 +6,7 @@ import { getDisplayName } from './hoc-utils';
 import initRequestBlockCache from './initRequestBlockCache';
 const Flatted = require('flatted/cjs');
 
-export default ({ origin = '' }) => {
+export default ({ origin }) => {
   return (ComposedComponent) => {
     const propTypes = {
       requestBlockState: PropTypes.shape(),
