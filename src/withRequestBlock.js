@@ -6,8 +6,8 @@ import { getDisplayName } from './hoc-utils';
 import initRequestBlockCache from './initRequestBlockCache';
 const Flatted = require('flatted/cjs');
 
-export default (options) => {
-  const { origin } = options || {};
+export default (config) => {
+  const { origin } = config || {};
 
   return (ComposedComponent) => {
     const propTypes = {
@@ -47,7 +47,10 @@ export default (options) => {
           try {
             // Run all RequestBlock queries
             await getDataFromTree(
-              <RequestBlockProvider cache={requestBlockCache} origin={origin || defaultOrigin}>
+              <RequestBlockProvider
+                cache={requestBlockCache}
+                origin={origin || defaultOrigin}
+              >
                 <ComposedComponent
                   Component={Component}
                   ctx={ctx}
