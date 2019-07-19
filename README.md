@@ -27,9 +27,10 @@ of Next.js, while making it easy to compose requests/data into your Next + React
 
 #### Options
 
-| Option   | Default                                                        | Description                   |
-| -------- | -------------------------------------------------------------- | ----------------------------- |
-| `origin` | `http(s)://[current host]` (server-side) or `''` (client-side) | Current protocol/host of app. |
+| Option    | Default                                                        | Description                                                                                                                |
+| --------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `origin`  | `http(s)://[current host]` (server-side) or `''` (client-side) | Origin to use for `RequestBlock` requests. Default to current protocol/host of app.                                        |
+| `options` | `null`                                                         | Default options that can be set for all `RequestBlock` instances. Although, can be overriden or ignore per `RequestBlock`. |
 
 
 ## Example w/o options
@@ -101,7 +102,10 @@ class MyApp extends App {
   }
 }
 
-export default withRequestBlock({ origin: 'https://api.custom.origin' })(MyApp);
+export default withRequestBlock({
+  origin: 'https://api.custom.origin',
+  options: {{ headers: { 'X-CSRF-TOKEN': 'adaalahlahfih7fhb7kaflhdalkf' }}},
+})(MyApp);
 ````
 
 ## License
