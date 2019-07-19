@@ -18,9 +18,8 @@ export function initRequestBlockCache(params: initRequestBlockCacheParams): Requ
  */
 
 export interface withRequestBlockParams {
-  accessToken: string;
-  host: string;
-  space: string;
+  origin?: string;
+  options?: object;
 }
 
 export type withRequestBlock = (params: withRequestBlockParams) => Component;
