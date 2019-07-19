@@ -7,7 +7,7 @@ import initRequestBlockCache from './initRequestBlockCache';
 const Flatted = require('flatted/cjs');
 
 export default (config) => {
-  const { origin } = config || {};
+  const { origin, options } = config || {};
 
   return (ComposedComponent) => {
     const propTypes = {
@@ -50,6 +50,7 @@ export default (config) => {
               <RequestBlockProvider
                 cache={requestBlockCache}
                 origin={origin || defaultOrigin}
+                options={options}
               >
                 <ComposedComponent
                   Component={Component}
@@ -87,7 +88,11 @@ export default (config) => {
 
       render() {
         return (
-          <RequestBlockProvider cache={this.requestBlockCache} origin={origin || ''}>
+          <RequestBlockProvider
+            cache={this.requestBlockCache}
+            origin={origin || ''}
+            options={options}
+          >
             <ComposedComponent {...this.props} />
           </RequestBlockProvider>
         );
